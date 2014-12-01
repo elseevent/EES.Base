@@ -1285,7 +1285,9 @@
                 if (arguments.length > 1) {
                     return S$.ap.push.apply(this, arguments);
                 }
-                return S$.ap.push.call(this, obj);
+                if(arguments.length > 0)
+                    return S$.ap.push.call(this, obj);
+                return;
             },
             /**
              * 获取范围项

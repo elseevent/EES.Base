@@ -58,7 +58,7 @@
                             var queue = new E$.components.collections.Queue(this.toArray());
                             var func = function (str) {
                                 loader(str, function () {
-                                    if (E$.isFunction) {
+                                    if (E$.isFunction(onLoad)) {
                                         onLoad.call(this);
                                     }
                                     if (queue.count() !== 0) {
