@@ -1285,8 +1285,9 @@
                 if (arguments.length > 1) {
                     return S$.ap.push.apply(this, arguments);
                 }
-                if(arguments.length > 0)
+                if (arguments.length > 0) {
                     return S$.ap.push.call(this, obj);
+                }
                 return;
             },
             /**
@@ -1935,26 +1936,46 @@
 
     S$.xmlToJson = xmlToJson;
 
+    var formatRE = /\{(\d+)\}/ig,
+        propFormatRE = /\{(\w+)\}/ig,
+        advPropsFormatRE = /\{(\w+(?:\.\w+)*)\}/ig;
+
     E$(String).staExtra({
+        /**
+         * 基础字符串格式化
+         * 
+         * @param {String} format 字符串格式
+         * @param {Array|Object...} args 
+         * 
+         * @returns {String}
+         */
         format: function (format, args) {
-            format = format || '';
-            var replaceRegExp = /\{(\d+)\}/ig;
-            var source = arguments;
-            return format.replace(replaceRegExp, function (a, b) {
-                return source[parseInt(b) + 1];
+            var source = E$.isArray(args) && arguments.length === 2 ? args : S$.ap.slice.call(arguments, 1);
+            return S$.sp.replace.call(format || '', formatRE, function (a, b) {
+                return source[parseInt(b)];
             });
         },
+        /**
+         * 对象属性数据字符串格式化
+         *  
+         * @param {String} format 字符串格式
+         * @param {Object} obj 数据源对象
+         * 
+         * @returns {String}
+         */
         propsFormat: function (format, obj) {
-            format = format || '';
-            var replaceRegExp = /\{(\w+)\}/ig;
-            return format.replace(replaceRegExp, function (a, b) {
+            return S$.sp.replace.call(format || '', propFormatRE, function (a, b) {
                 return obj[b];
             });
         },
+        /**
+         * 高级对象属性字符串格式化
+         * 
+         * @param {String} format 字符串格式
+         * @param {Object} obj 数据源对象
+         */
         advPropsFormat: function (format, obj) {
-            format = format || '';
-            var replaceRegExp = /\{(\w+(?:\.\w+)*)\}/ig;
-            return format.replace(replaceRegExp, function (a, b) {
+            return S$.sp.replace.call(format || '', advPropsFormatRE, function (a, b) {
                 //_Else.Event_.a1.b2.c3 format
                 var s = (b || '').split('.'), last = obj;
                 for (var i = 0; i < s.length; i++) {
@@ -1965,7 +1986,17 @@
                 }
                 return last;
             });
-        }
+        },
+        /**
+         * 移除字符串中的空白 [\r\n\t]
+         * 
+         * @param {String} val 数据源字符串
+         * 
+         * @returns {String}
+         */
+        trimWhitespace: function (val) {
+            return S$.sp.replace.call(val, /[\r\n\t]/g, '');
+        },
     });
 
     E$.extends({
