@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<bundle minify="true" runOnBuild="true" output="UIAll.js" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://vswebessentials.com/schemas/v1/bundle.xsd">
+  <!--The order of the <file> elements determines the order of the file contents when bundled.-->
+  <file>/Scripts/EES/UI/CONTROLS/UIControlBase.js</file>
+  <file>/Scripts/EES/UI/CONTROLS/UIList.js</file>
+  <file>/Scripts/EES/UI/CONTROLS/UIGrid.js</file>
+  <file>/Scripts/EES/UI/CONTROLS/UIPagination.js</file>
+</bundle>

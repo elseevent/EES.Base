@@ -11,6 +11,20 @@
             return ret + (!E$.isDebugging ? ".min." + extension : "." + extension);
         };
 
+        var SimpleXHR = loaders.simpleXHR = function (opts) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    if (opts.onLoad) {
+                        opts.onLoad(xhr, xhr.response);
+                    }
+                }
+            };
+            xhr.open(opts.method, opts.url, opts.async);
+            xhr.send(null);
+            return xhr.response;
+        };
+
         E$(loaders).extra({
             "img": function (src, onLoad) {
                 var img = new Image();
@@ -33,8 +47,32 @@
                 document.body.appendChild(script);
                 return script;
             },
-            //"xml": function (src, onLoad) { },
-            //"json": function (src, onLoad) { },
+            "xml": function (src, onLoad) {
+                var ret = SimpleXHR({
+                    url: loaders.$GetPath(src, "xml"),
+                    async: false,
+                    method: "GET",
+                    onLoad: function (xhr, response) {
+                        if (E$.isFunction(onLoad)) {
+                            onLoad.call(xhr, response);
+                        }
+                    },
+                });
+                return ret;
+            },
+            "json": function (src, onLoad) {
+                var ret = SimpleXHR({
+                    url: loaders.$GetPath(src, "json"),
+                    async: false,
+                    method: "GET",
+                    onLoad: function (xhr, response) {
+                        if (E$.isFunction(onLoad)) {
+                            onLoad.call(xhr, response);
+                        }
+                    },
+                });
+                return ret;
+            },
         });
     });
 
@@ -81,7 +119,7 @@
         resource: function (name, map) {
             return {
                 load: function (onLoad) {
-                    var count = 0;
+                    var count = 0, ret = [];
                     E$(map).map(function (d) {
                         var ret = [];
                         E$.each(d, function (i, v) {
@@ -91,7 +129,6 @@
                         });
                         return ret;
                     }).execute(function (v, i) {
-                        var ret = [];
                         v.load(function () {
                             ret.push(this);
                             count -= 1;

@@ -132,6 +132,9 @@
                                 transformObj.setAnimateDuration(transitionDuration);
                                 transformObj.moveTo(translateVector);
                                 currentIndex = index;
+                                if (options.onDone) {
+                                    options.onDone(currentIndex);
+                                }
                             }
                         },
                         getIndex: function () {
