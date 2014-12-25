@@ -2115,6 +2115,43 @@
 
             return proxy;
         },
+        /**
+         * 操作执行节流
+         * 
+         * @param {Function} fn 要节流的操作
+         * @param {Number} delay 节流延迟
+         * @param {Number} fixed 固定执行时间
+         * 
+         * @returns {Function} 修饰过的操作
+         */
+        throttle: function (fn, delay, fixed) {
+            var timer, start;
+            if (arguments.length === 2) {
+                return function () {
+                    var context = this, args = arguments;
+                    clearTimeout(timer);
+                    timer = setTimeout(function () {
+                        fn.apply(context, args);
+                    }, delay);
+                }
+            }
+            return function () {
+                var context = this, args = arguments, current = Date.now();
+                clearTimeout(timer);
+                if (!start) {
+                    start = current;
+                }
+                if (current - start >= fixed) {
+                    fn.apply(context, args);
+                    start = current;
+                } else {
+                    timer = setTimeout(function () {
+                        fn.apply(context, args);
+                        start = Date.now();
+                    }, delay);
+                }
+            };
+        },
         ready: (function (d) {
 
             var readyList = new E$.components.collections.List(),

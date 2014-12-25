@@ -121,6 +121,8 @@
                                         options.onDone(currentIndex);
                                     }
                                 }, 10);
+                            } else {
+                                currentVector.elapse(startVector) < timeThreshold && options.onTap && options.onTap(currentIndex);
                             }
                         },
                     }).bind(eventTarget);
